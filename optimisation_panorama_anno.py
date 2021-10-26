@@ -5,6 +5,7 @@ from math import *
 
 """
 Please read the reddit post associated to understand how the program works and how to use it!
+This program works only was written to fit with Anno Designer v9.1 .
 """
 
 
@@ -26,10 +27,10 @@ def extraction_position(L,l1,l2): #when L is the list that is given from anno de
             while L[i3]!=',': #when we found l2, we extract the positions and as we don't know how many digits are written, we look for the character right after the last digit; both for x and y
                 i3+=1
             a=int(L[i2+len(l2):i3])
-            i4=i3+5
-            while L[i4]!='}':
+            i4=i3+1
+            while L[i4]!='"':
                 i4+=1
-            b=int(L[i3+6:i4])
+            b=int(L[i3+1:i4])
             extract.append([a,b])
             i1=i4-1 #the main counter is incremented
         i1+=1
@@ -197,7 +198,7 @@ When your layout is ready, save your file under layout.ad. Then right click on i
 def run(nbr_iter):
     fichier=open('layout.txt')
     lignes=fichier.readlines()[0]
-    house_position=extraction_position(lignes,'Residence_Old_World',':{"_x":') #extraction of the houses position from the Anno Designer file
+    house_position=extraction_position(lignes,'Residence_Old_World','"Position":"') #extraction of the houses position from the Anno Designer file
     ((x,y),min1,min2)=size_matrix(house_position)
     M=np.zeros((x,y)) #creation of a matrix full of 0 that has the right size
     World=world_generation(M,house_position,min1,min2) #generation of the layout using this program conventions
@@ -245,26 +246,25 @@ def run(nbr_iter):
                     World[liste_coord_influenced[l][0]+1,liste_coord_influenced[l][1]+1]=World[liste_coord_influenced[l][0],liste_coord_influenced[l][1]+1]
     liste_position=position_from_matrix(World) #we gather the positions of all the building centers in the layout
     fichier=open('layout.txt','w') #we open the layout file to overwrite it
-    fichier.write('{"FileVersion":3,"Objects":[') #beginning of every Anno Designer txt file
+    fichier.write('{"FileVersion":4,"LayoutVersion":"1.0.0.0","Modified":"2021-10-26T14:15:05.9616372Z","Objects":[') #beginning of every Anno Designer txt file
     for k in range (len(liste_position)):
-        fichier.write('{"Identifier":"Residence_Old_World","Label":"","Position":')
-        fichier.write('{"_x":')
+        fichier.write('{"Identifier":"Residence_Old_World","Label":"","Position":"')
         fichier.write(str(liste_position[k][1]))
-        fichier.write(',"_y":')
-        fichier.write(str(liste_position[k][0])) #the position of the cener is implemented in the output file
-        fichier.write('},"Size":{"_height":3,"_width":3},"Icon":"A7_resident","Template":"ResidenceBuilding7","Color":{"A":255,')
+        fichier.write(',')
+        fichier.write(str(liste_position[k][0])) #the position of the center is implemented in the output file
+        fichier.write('","Size":"3,3","Icon":"A7_resident","Template":"ResidenceBuilding","Color":{"A":255,')
         if liste_position[k][2]==0:
-            fichier.write('"R":255,"G":0,"B":0},"Borderless":false,"Road":false,"Radius":0,"InfluenceRange":-2,"PavedStreet":false},')
+            fichier.write('"R":255,"G":0,"B":0},"Borderless":false,"Road":false,"Radius":0.0,"InfluenceRange":-2.0,"PavedStreet":false},')
         elif liste_position[k][2]==1:
-            fichier.write('"R":0,"G":255,"B":0},"Borderless":false,"Road":false,"Radius":0,"InfluenceRange":-2,"PavedStreet":false},')
+            fichier.write('"R":0,"G":255,"B":0},"Borderless":false,"Road":false,"Radius":0.0,"InfluenceRange":-2.0,"PavedStreet":false},')
         elif liste_position[k][2]==2:
-            fichier.write('"R":0,"G":0,"B":255},"Borderless":false,"Road":false,"Radius":0,"InfluenceRange":-2,"PavedStreet":false},')
+            fichier.write('"R":0,"G":0,"B":255},"Borderless":false,"Road":false,"Radius":0.0,"InfluenceRange":-2.0,"PavedStreet":false},')
         elif liste_position[k][2]==3:
-            fichier.write('"R":255,"G":255,"B":0},"Borderless":false,"Road":false,"Radius":0,"InfluenceRange":-2,"PavedStreet":false},')
+            fichier.write('"R":255,"G":255,"B":0},"Borderless":false,"Road":false,"Radius":0.0,"InfluenceRange":-2.0,"PavedStreet":false},')
         elif liste_position[k][2]==4:
-            fichier.write('"R":255,"G":0,"B":255},"Borderless":false,"Road":false,"Radius":0,"InfluenceRange":-2,"PavedStreet":false},')
+            fichier.write('"R":255,"G":0,"B":255},"Borderless":false,"Road":false,"Radius":0.0,"InfluenceRange":-2.0,"PavedStreet":false},')
         elif liste_position[k][2]==5:
-            fichier.write('"R":0,"G":255,"B":255},"Borderless":false,"Road":false,"Radius":0,"InfluenceRange":-2,"PavedStreet":false},') #each tier will be represented by a color on the final Anno Designer layout: red for normal houses, green for tier 1, blue for tier 2, yellow for tier 3, magenta for tier 4 and cyan for tier 5
+            fichier.write('"R":0,"G":255,"B":255},"Borderless":false,"Road":false,"Radius":0.0,"InfluenceRange":-2.0,"PavedStreet":false},') #each tier will be represented by a color on the final Anno Designer layout: red for normal houses, green for tier 1, blue for tier 2, yellow for tier 3, magenta for tier 4 and cyan for tier 5
     fichier.close() #we close the file to save everything
     fichier=open('layout.txt') #here we want to erase the last comma that must not be in the file
     line1=fichier.readlines()[0] #we save what is currently written in the file
